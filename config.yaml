@@ -1,0 +1,23 @@
+name: "VChat Server"
+version: "1.0.1"
+slug: "vchat_server"
+description: "VChat messaging server with authentication and passkey support"
+arch:
+  - amd64
+  - aarch64
+ports:
+  8000/tcp: 8000
+options:
+  server_port: 8000
+  jwt_secret: "change-me-in-production"
+  rp_id: "vchat.local"
+  rp_name: "VChat"
+schema:
+  server_port: int
+  jwt_secret: str
+  rp_id: str
+  rp_name: str
+startup: application
+boot: auto
+map:
+  - data:rw
