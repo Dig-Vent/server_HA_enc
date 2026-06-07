@@ -1,5 +1,5 @@
 name: "VChat Server"
-version: "1.0.8"
+version: "1.1.0"
 slug: "vchat_server"
 description: "VChat messaging server with authentication and passkey support"
 arch:
