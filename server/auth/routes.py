@@ -1,5 +1,6 @@
 import json
 import base64
+import traceback
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.future import select
@@ -103,6 +104,7 @@ async def begin_passkey_register(
         )
         return options
     except Exception as e:
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Failed to generate options: {e}")
 
 
@@ -117,6 +119,7 @@ async def complete_passkey_register(
         credential_dict = json.loads(req.credential)
         verification = verify_reg_response(credential_dict)
     except Exception as e:
+        traceback.print_exc()
         raise HTTPException(status_code=400, detail=str(e))
         
     # Store credential in DB
@@ -144,6 +147,7 @@ async def begin_passkey_login():
         options = generate_auth_options()
         return options
     except Exception as e:
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Failed to generate options: {e}")
 
 
@@ -185,6 +189,7 @@ async def complete_passkey_login(
             stored_sign_count=cred.sign_count
         )
     except Exception as e:
+        traceback.print_exc()
         raise HTTPException(status_code=401, detail=f"Passkey verification failed: {e}")
         
     # Update credential sign count

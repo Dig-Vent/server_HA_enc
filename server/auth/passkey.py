@@ -85,7 +85,7 @@ def generate_reg_options(user_id: str, username: str, exclude_credential_ids: Li
         user_id=user_id_bytes,
         user_name=username,
         user_display_name=username,
-        attestation_conveyance_preference=AttestationConveyancePreference.NONE,
+        attestation=AttestationConveyancePreference.NONE,
         authenticator_selection=AuthenticatorSelectionCriteria(
             resident_key=ResidentKeyRequirement.REQUIRED,  # Required for username-less passkey login
             user_verification=UserVerificationRequirement.PREFERRED,
