@@ -14,7 +14,7 @@ options:
   rp_name: "VChat"
 schema:
   server_port: int
-  jwt_secret: str
+  jwt_secret: password
   rp_id: str
   rp_name: str
 startup: application
