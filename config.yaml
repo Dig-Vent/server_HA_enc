@@ -10,7 +10,7 @@ ports:
 options:
   server_port: 8000
   jwt_secret: "change-me-in-production"
-  rp_id: "vchat-diogo.duckdns.org"
+  rp_id: "dig-vent.github.io"
   rp_name: "VChat"
 schema:
   server_port: int
