@@ -7,6 +7,7 @@ from webauthn import (
     verify_registration_response,
     generate_authentication_options,
     verify_authentication_response,
+    options_to_json,
 )
 from webauthn.helpers import bytes_to_base64url, base64url_to_bytes
 from webauthn.helpers.structs import (
@@ -31,7 +32,8 @@ _challenge_store: Dict[str, Dict[str, Any]] = {}
 
 def store_challenge(challenge: bytes, user_id: Optional[str] = None, ttl: int = 300):
     """Store a generated challenge with an expiry time."""
-    challenge_b64url = bytes_to_base64url(challenge)
+    # Normalize key: strip base64url padding to avoid mismatch with browser clientDataJSON
+    challenge_b64url = bytes_to_base64url(challenge).rstrip("=")
     _challenge_store[challenge_b64url] = {
         "challenge": challenge,
         "user_id": user_id,
@@ -40,16 +42,18 @@ def store_challenge(challenge: bytes, user_id: Optional[str] = None, ttl: int = 
 
 def verify_and_pop_challenge(challenge_b64url: str) -> Optional[bytes]:
     """Retrieve and remove a challenge from the store if valid and not expired."""
-    item = _challenge_store.get(challenge_b64url)
+    # Normalize: strip padding to match how we store keys
+    normalized = challenge_b64url.rstrip("=")
+    item = _challenge_store.get(normalized)
     if not item:
         return None
     
     # Remove expired challenges
     if time.time() > item["expires_at"]:
-        _challenge_store.pop(challenge_b64url, None)
+        _challenge_store.pop(normalized, None)
         return None
     
-    _challenge_store.pop(challenge_b64url, None)
+    _challenge_store.pop(normalized, None)
     return item["challenge"]
 
 def clean_expired_challenges():
@@ -93,12 +97,11 @@ def generate_reg_options(user_id: str, username: str, exclude_credential_ids: Li
         exclude_credentials=exclude_credentials,
     )
     
-    # Store challenge
-    challenge_bytes = base64url_to_bytes(options.challenge)
-    store_challenge(challenge_bytes, user_id=user_id)
+    # Store challenge (options.challenge is already bytes)
+    store_challenge(options.challenge, user_id=user_id)
     
-    # Convert options object to dict/JSON
-    return json.loads(options.json())
+    # Convert options object to dict/JSON using the proper helper
+    return json.loads(options_to_json(options))
 
 
 def verify_reg_response(credential_dict: Dict[str, Any]) -> Any:
@@ -155,11 +158,10 @@ def generate_auth_options(allow_credential_ids: List[bytes] = None) -> Dict[str,
         user_verification=UserVerificationRequirement.PREFERRED,
     )
     
-    # Store challenge
-    challenge_bytes = base64url_to_bytes(options.challenge)
-    store_challenge(challenge_bytes)
+    # Store challenge (options.challenge is already bytes)
+    store_challenge(options.challenge)
     
-    return json.loads(options.json())
+    return json.loads(options_to_json(options))
 
 
 def verify_auth_response(
