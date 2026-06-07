@@ -8,7 +8,7 @@ class Settings:
         self.SERVER_PORT = 8000
         self.JWT_SECRET = "change-me-in-production-very-secret-key-123456"
         self.JWT_EXPIRY_HOURS = 24
-        self.RP_ID = "vchat.local"
+        self.RP_ID = "vchat-diogo.duckdns.org"
         self.RP_NAME = "VChat"
         self.DATABASE_URL = "sqlite+aiosqlite:////data/vchat.db"
 
@@ -41,11 +41,12 @@ class Settings:
             f"https://{self.RP_ID}",
             f"http://{self.RP_ID}",
             f"http://{self.RP_ID}:{self.SERVER_PORT}",
+            f"https://{self.RP_ID}:{self.SERVER_PORT}",
             "http://localhost",
             "http://localhost:8000",
             # Home Assistant add-on origins
             "http://homeassistant:8000",
-            "https://vchat.local",
+            "https://vchat-diogo.duckdns.org",
         ]
 
 _settings = None

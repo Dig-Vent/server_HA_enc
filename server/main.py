@@ -1,6 +1,7 @@
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from server.config import get_settings
 from server.database import init_db
 from server.auth.routes import router as auth_router
@@ -52,6 +53,29 @@ async def connect(payload: dict):
         "username": decoded.get("username"),
         "user_id": decoded.get("sub")
     }
+
+# Digital Asset Links for Android Passkey (WebAuthn) RP ID validation
+@app.get("/.well-known/assetlinks.json")
+async def asset_links():
+    """Serve Digital Asset Links JSON for Android passkey RP ID validation."""
+    return JSONResponse(
+        content=[
+            {
+                "relation": [
+                    "delegate_permission/common.handle_all_urls",
+                    "delegate_permission/common.get_login_creds"
+                ],
+                "target": {
+                    "namespace": "android_app",
+                    "package_name": "com.ventura.vchat",
+                    "sha256_cert_fingerprints": [
+                        "BB:FD:5E:C2:E6:D1:A2:88:FC:8D:6F:70:BA:01:7C:E7:12:D3:25:BE:79:74:FA:B9:6D:9D:D0:70:AA:E8:EA:33"
+                    ]
+                }
+            }
+        ],
+        media_type="application/json"
+    )
 
 # Health Check
 @app.get("/health")
