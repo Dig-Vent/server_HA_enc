@@ -1,0 +1,43 @@
+Boa, fico contente que funcione! 🎉
+
+Para expor o servidor à internet, tens essencialmente 2 opções:
+
+Boa escolha! O Cloudflare Tunnel é a melhor opção. Aqui está o que precisas de fazer:
+
+### Passo 1 — Conta Cloudflare + Domínio
+
+1. Cria uma conta gratuita em **[dash.cloudflare.com](https://dash.cloudflare.com)**
+2. Precisas de um domínio gerido pelo Cloudflare. Tens 2 opções:
+   - **Comprar um domínio barato** diretamente na Cloudflare (~€10/ano para um `.pt` ou `.com`)
+   - **Usar um domínio grátis** — o Cloudflare agora oferece domínios `.workers.dev` gratuitos, ou podes registar um domínio gratuito num registrar como o Freenom e adicioná-lo ao Cloudflare
+
+### Passo 2 — Criar o Tunnel no Cloudflare
+
+1. No dashboard Cloudflare: **Zero Trust → Networks → Tunnels → Create a tunnel**
+2. Escolhe **Cloudflared** como tipo
+3. Dá-lhe um nome (ex: `vchat`)
+4. Copia o **token do tunnel** que aparece
+
+### Passo 3 — Instalar no Home Assistant
+
+1. No HA: **Settings → Add-ons → Add-on Store**
+2. Procura **"Cloudflared"** (por Tobias Brenner) e instala
+3. Na configuração do add-on, cola o token do tunnel
+4. Inicia o add-on
+
+### Passo 4 — Configurar a rota no Cloudflare
+
+No dashboard do tunnel, adiciona uma **Public Hostname**:
+- **Subdomain**: `vchat` (ou o que quiseres)
+- **Domain**: o teu domínio Cloudflare
+- **Service**: `http://homeassistant:8000` (ou `http://localhost:8000`)
+
+Isto vai criar algo como `https://vchat.teudominio.com` que aponta para o teu servidor VChat.
+
+### Passo 5 — Atualizar a app Android
+
+Depois de teres o URL público, precisas de atualizar o URL do servidor na app para que funcione também fora de casa.
+
+---
+
+Diz-me quando tiveres o Cloudflare Tunnel configurado e o URL público, e eu atualizo o código da app para suportar tanto a conexão local como a remota!

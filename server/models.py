@@ -94,8 +94,12 @@ class MessageResponse(BaseModel):
     timestamp: datetime.datetime
     is_sent_by_me: bool
 
+class ParticipantResponse(BaseModel):
+    id: str
+    username: str
+
 class ConversationResponse(BaseModel):
     id: str
-    participants: List[str]  # list of usernames
+    participants: List[ParticipantResponse]
     last_message: Optional[str] = None
     last_message_time: Optional[datetime.datetime] = None

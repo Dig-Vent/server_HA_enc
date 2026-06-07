@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from server.database import get_db
 from server.models import (
-    User, Conversation, Message, MessageResponse, ConversationResponse, MessageCreate
+    User, Conversation, Message, MessageResponse, ConversationResponse, MessageCreate, ParticipantResponse
 )
 from server.auth.jwt_handler import get_current_user
 
@@ -48,7 +48,7 @@ async def get_conversations(
                 u_res = await db.execute(select(User).filter(User.id == pid))
                 u = u_res.scalars().first()
                 if u:
-                    resolved_participants.append(u.username)
+                    resolved_participants.append(ParticipantResponse(id=u.id, username=u.username))
                     
             # Get the last message in this conversation
             msg_res = await db.execute(
@@ -166,7 +166,10 @@ async def create_conversation(
         # Return existing conversation
         return ConversationResponse(
             id=existing_conv.id,
-            participants=[current_user.username, recipient.username]
+            participants=[
+                ParticipantResponse(id=current_user.id, username=current_user.username),
+                ParticipantResponse(id=recipient.id, username=recipient.username)
+            ]
         )
         
     # Create new conversation
@@ -180,7 +183,10 @@ async def create_conversation(
     
     return ConversationResponse(
         id=new_conv.id,
-        participants=[current_user.username, recipient.username]
+        participants=[
+            ParticipantResponse(id=current_user.id, username=current_user.username),
+            ParticipantResponse(id=recipient.id, username=recipient.username)
+        ]
     )
 
 
