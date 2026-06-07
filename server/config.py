@@ -42,7 +42,10 @@ class Settings:
             f"http://{self.RP_ID}",
             f"http://{self.RP_ID}:{self.SERVER_PORT}",
             "http://localhost",
-            "http://localhost:8000"
+            "http://localhost:8000",
+            # Home Assistant add-on origins
+            "http://homeassistant:8000",
+            "https://vchat.local",
         ]
 
 _settings = None
