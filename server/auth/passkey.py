@@ -198,7 +198,7 @@ def verify_auth_response(
             expected_origin=origin,
             expected_rp_id=settings.RP_ID,
             credential_public_key=stored_public_key,
-            credential_sign_count=stored_sign_count,
+            credential_current_sign_count=stored_sign_count,
             require_user_verification=False,
         )
         return verification
